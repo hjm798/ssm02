@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!--<security:http> spring的过滤链的配置
+        1)需要拦截什么资源
+        2）什么资源有什么角色权限
+        3）定义认证的方式 HttpBasic、FormLogin(*)
+        4)定义登录页面，定义登录的请求地址，定义错误处理方式
+
+    -->
+   <security:http>
+       <!--
+          pattern:拦截的路径
+          access:拦截的方式  isFullyAuthenticated  （该资源需要进行认证才能实现访问）
+       -->
+       <!--配置某些页面单独的权限（其实也就是范围大小的问题）
+            isAnonymous  :必须是匿名用户才可以登录（也就是说如果已经登录的用户是不能访问的）
+            permitAll  :允许所有用户访问
+       -->
+       <security:intercept-url pattern="/pages/login.jsp" access="permitAll()"></security:intercept-url>
+       <security:intercept-url pattern="/index.jsp" access="isAnonymous()"/>
+       <security:intercept-url pattern="/**" access="isFullyAuthenticated()"/>
+       <!--security:http-basic  使用HttpBasic的方式来进行认证（登录）-->
+            <!-- <security:http-basic/>-->
+        <!--使用form-login ：方式来进行认证（就是出现一个登录表单）-->
+       <!--
+            login-page:自定义的登录页面地址。
+       -->
+      <security:form-login login-page="/pages/login.jsp" login-processing-url="/securityLogin" authentication-success-forward-url="/pages/success.jsp"/>
+   </security:http>
+
+    <security:csrf disabled="true"/>
+    <!--security:authentication-manager  认证管理器
+            1）认证信息提供方式（账号，密码，当前用户的权限）
+    -->
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="zhangsan" password="{noop}111" authorities="ROLE_USER"></security:user>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
